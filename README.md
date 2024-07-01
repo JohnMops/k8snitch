@@ -37,6 +37,17 @@ k8snitch is an interactive CLI tool designed to fetch information from your Kube
   - Images running in each deployment/statefulset
   - Last update time of the resource
 
+### Get Resource Requests Information
+
+- **Select this action**: Choose to fetch resources requests information.
+- **Select the namespace**: Specify the namespace in the Kubernetes cluster.
+- **Output format**: Displays information in a formatted table.
+- **Outputs**:
+  - Deployment/Statefulset name
+  - Resource Type 
+  - CPU
+  - Memory
+
 More functionalities to be added in future updates.
 
 ## Contributing

@@ -37,6 +37,7 @@ def choose_option() -> None:
             'option',
             message="Choose an action",
             choices=['Get Container Images', 
+                     'Get Resource Requests Information',
                      'Exit'
                      ],
         ),
@@ -51,8 +52,10 @@ def choose_option() -> None:
             chosen_ns: str = choose_namespace(ns_list=ns_list)
             k8s.get_images_info(namespace=chosen_ns)
             choose_option()
-        case "Wednesday":
-            print("It's Wednesday!")
+        case "Get Resource Requests Information":
+            ns_list: list = k8s.list_namespaces()
+            chosen_ns: str = choose_namespace(ns_list=ns_list)
+            k8s.get_resources_requests(namespace=chosen_ns)
 
 
 
