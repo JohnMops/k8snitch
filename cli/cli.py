@@ -56,7 +56,7 @@ def choose_option() -> None:
             ns_list: list = k8s.list_namespaces()
             chosen_ns: str = choose_namespace(ns_list=ns_list)
             k8s.get_resources_requests(namespace=chosen_ns)
-
+            choose_option()
 
 
 # @cli.command()
