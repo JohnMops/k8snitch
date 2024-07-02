@@ -9,7 +9,7 @@ def choose_option() -> None:
     1. Checks for the active context and provides options
     2. Provides options for choosing what action to take
     """
-    print(f'You are connected to {k8s.show_active_context()}')    
+    print(f'You are connected to {k8s.show_active_context()}\n')    
     
     questions = [
         inquirer.List(
