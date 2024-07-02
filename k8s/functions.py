@@ -201,14 +201,15 @@ def get_replicas_count(namespace: str) -> None:
     
     data = []
     
-    headers = ["Type", "Name", "Namespace", "Replicas"]
+    headers = ["Type", "Name", "Namespace", "Replicas Set", "Replicas Ready"]
 
     for deployment in deployment_list.items:
             data.append([
-                "Deployment",
+                "Replicas Ready",
                 deployment.metadata.name,
                 deployment.metadata.namespace,
-                deployment.spec.replicas
+                deployment.spec.replicas,
+                deployment.status.ready_replicas
             ])
 
     for statefulset in sts_list.items:
@@ -216,7 +217,8 @@ def get_replicas_count(namespace: str) -> None:
             "StatefulSet",
             statefulset.metadata.name,
             statefulset.metadata.namespace,
-            statefulset.spec.replicas
+            statefulset.spec.replicas,
+            statefulset.status.ready_replicas
         ])
 
     df = pd.DataFrame(data, columns=headers)
