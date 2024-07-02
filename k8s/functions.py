@@ -205,7 +205,7 @@ def get_replicas_count(namespace: str) -> None:
 
     for deployment in deployment_list.items:
             data.append([
-                "Replicas Ready",
+                "Deployment",
                 deployment.metadata.name,
                 deployment.metadata.namespace,
                 deployment.spec.replicas,
