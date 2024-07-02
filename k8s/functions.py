@@ -185,3 +185,43 @@ def list_namespaces() -> list:
         namespace_list.append(namespaces.items[i].metadata.name)
     return namespace_list
 
+def get_replicas_count(namespace: str) -> None:
+    """
+    Gets replica count for all deployments and 
+    statefulsets in a namespace and displays them
+    in a table
+
+    Args:
+        namespace (str): Chosen namespace by the user
+    """
+    v1 = client.AppsV1Api()
+    
+    deployment_list = get_deployments(namespace=namespace)
+    sts_list: list = get_statefulsets(namespace=namespace)
+    
+    data = []
+    
+    headers = ["Type", "Name", "Namespace", "Replicas"]
+
+    for deployment in deployment_list.items:
+            data.append([
+                "Deployment",
+                deployment.metadata.name,
+                deployment.metadata.namespace,
+                deployment.spec.replicas
+            ])
+
+    for statefulset in sts_list.items:
+        data.append([
+            "StatefulSet",
+            statefulset.metadata.name,
+            statefulset.metadata.namespace,
+            statefulset.spec.replicas
+        ])
+
+    df = pd.DataFrame(data, columns=headers)
+    
+    df.index = df.index + 1
+
+    print(tabulate(df, headers=headers, tablefmt="grid"))
+    print("\n")

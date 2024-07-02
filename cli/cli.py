@@ -38,6 +38,7 @@ def choose_option() -> None:
             message="Choose an action",
             choices=['Get Container Images', 
                      'Get Resource Requests Information',
+                     'Get Replica Count',
                      'Exit'
                      ],
         ),
@@ -56,6 +57,11 @@ def choose_option() -> None:
             ns_list: list = k8s.list_namespaces()
             chosen_ns: str = choose_namespace(ns_list=ns_list)
             k8s.get_resources_requests(namespace=chosen_ns)
+            choose_option()
+        case "Get Replica Count":
+            ns_list: list = k8s.list_namespaces()
+            chosen_ns: str = choose_namespace(ns_list=ns_list)
+            k8s.get_replicas_count(namespace=chosen_ns)
             choose_option()
 
 
