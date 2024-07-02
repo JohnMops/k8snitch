@@ -48,6 +48,17 @@ k8snitch is an interactive CLI tool designed to fetch information from your Kube
   - CPU
   - Memory
 
+### Get Replica Count
+
+- **Select this action**: Choose to fetch resources requests information.
+- **Select the namespace**: Specify the namespace in the Kubernetes cluster.
+- **Output format**: Displays information in a formatted table.
+- **Outputs**:
+  - Workload type: statefulset/deployment
+  - Name of the workload
+  - Namespace
+  - Replica caount for the workload
+
 More functionalities to be added in future updates.
 
 ## Contributing
