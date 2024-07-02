@@ -120,7 +120,7 @@ def get_images_info(namespace: str) -> None:
     
     v1 = client.AppsV1Api()
     
-    deployment_list = get_deployments(namespace=namespace)
+    deployment_list: list = get_deployments(namespace=namespace)
             
     data: dict = {
                 "Service": [],
@@ -196,7 +196,7 @@ def get_replicas_count(namespace: str) -> None:
     """
     v1 = client.AppsV1Api()
     
-    deployment_list = get_deployments(namespace=namespace)
+    deployment_list: list = get_deployments(namespace=namespace)
     sts_list: list = get_statefulsets(namespace=namespace)
     
     data = []
