@@ -128,7 +128,8 @@ def get_images_info(namespace: str) -> None:
     deployment_list: list = get_deployments(namespace=namespace)
             
     data: dict = {
-                "Service": [],
+                "Type": [],
+                "Name": [],
                 "Image Used": [],
                 "Last Update Time": []
             }
@@ -143,8 +144,9 @@ def get_images_info(namespace: str) -> None:
                 if condition.type == "Progressing" and condition.status == "True":
                     last_update_time = condition.last_update_time
                     break
-
-        data["Service"].append(deployment_name)
+        
+        data["Type"].append('Deployment')
+        data["Name"].append(deployment_name)
         data["Image Used"].append(deployment_container_image)
         data["Last Update Time"].append(last_update_time)
     
@@ -160,8 +162,9 @@ def get_images_info(namespace: str) -> None:
                 if condition.type == "Progressing" and condition.status == "True":
                     last_update_time = condition.last_update_time
                     break
-                
-        data["Service"].append(sts_name)
+        
+        data["Type"].append('StatefulSet')
+        data["Name"].append(sts_name)
         data["Image Used"].append(sts_container_images)
         data["Last Update Time"].append(last_update_time)
     
