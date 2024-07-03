@@ -1,6 +1,6 @@
 import click
 import inquirer
-from k8s import functions as k8s
+from k8s.functions import Kuber
 
     
 # @cli.command()
@@ -9,7 +9,9 @@ def choose_option() -> None:
     1. Checks for the active context and provides options
     2. Provides options for choosing what action to take
     """
-    print(f'You are connected to {k8s.show_active_context()}\n')    
+    kuber: Kuber = Kuber()
+    
+    print(f'You are connected to {kuber.show_active_context()}\n')    
     
     questions = [
         inquirer.List(
@@ -49,19 +51,19 @@ def choose_option() -> None:
         case "Exit":
             exit(0)
         case "Get Container Images":
-            ns_list: list = k8s.list_namespaces()
+            ns_list: list = kuber.list_namespaces()
             chosen_ns: str = choose_namespace(ns_list=ns_list)
-            k8s.get_images_info(namespace=chosen_ns)
+            kuber.get_images_info(namespace=chosen_ns)
             choose_option()
         case "Get Resource Requests Information":
-            ns_list: list = k8s.list_namespaces()
+            ns_list: list = kuber.list_namespaces()
             chosen_ns: str = choose_namespace(ns_list=ns_list)
-            k8s.get_resources_requests(namespace=chosen_ns)
+            kuber.get_resources_requests(namespace=chosen_ns)
             choose_option()
         case "Get Replica Count":
-            ns_list: list = k8s.list_namespaces()
+            ns_list: list = kuber.list_namespaces()
             chosen_ns: str = choose_namespace(ns_list=ns_list)
-            k8s.get_replicas_count(namespace=chosen_ns)
+            kuber.get_replicas_count(namespace=chosen_ns)
             choose_option()
 
 
@@ -77,7 +79,7 @@ def choose_namespace(ns_list: list) -> str:
     Returns:
         str: Returns the chosen namespace
     """
-    # ns_list = k8s.list_namespaces()
+    # ns_list = kuber.list_namespaces()
     # print(ns_list)
     questions = [
         inquirer.List(
