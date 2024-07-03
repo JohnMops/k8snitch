@@ -11,29 +11,6 @@ def choose_option() -> None:
     """
     kuber: Kuber = Kuber()
     
-    print(f'You are connected to {kuber.show_active_context()}\n')    
-    
-    questions = [
-        inquirer.List(
-            'option',
-            message="Is this the correct cluster? ",
-            choices=['Yes', 
-                     'No',
-                     'Exit'
-                     ],
-        ),
-    ]
-    answers: dict = inquirer.prompt(questions)
-    
-    match answers["option"]:
-        case "No":
-            print("Please connect to the right cluster and try again")
-            exit(0)
-        case "Yes":
-            pass
-        case "Exit":
-            exit(0)
-    
     questions = [
         inquirer.List(
             'option',
@@ -47,6 +24,7 @@ def choose_option() -> None:
     ]
     answers: dict = inquirer.prompt(questions)
     click.echo(f'You chose: {answers["option"]}')
+    
     match answers["option"]:
         case "Exit":
             exit(0)
@@ -92,3 +70,27 @@ def choose_namespace(ns_list: list) -> str:
     # click.echo(f'You chose: {answers["option"]}')
 
     return answers["option"] 
+
+def show_connected_cluster(kuber) -> None:
+    print(f'You are connected to {kuber.show_active_context()}\n')    
+    
+    questions = [
+        inquirer.List(
+            'option',
+            message="Is this the correct cluster? ",
+            choices=['Yes', 
+                     'No',
+                     'Exit'
+                     ],
+        ),
+    ]
+    answers: dict = inquirer.prompt(questions)
+    
+    match answers["option"]:
+        case "No":
+            print("Please connect to the right cluster and try again")
+            exit(0)
+        case "Yes":
+            pass
+        case "Exit":
+            exit(0)
