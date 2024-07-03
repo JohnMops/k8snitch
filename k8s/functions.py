@@ -1,5 +1,6 @@
 from kubernetes import client, config
 from kubernetes.config.config_exception import ConfigException
+from kubernetes.client.exceptions import ApiException
 import pandas as pd
 from tabulate import tabulate
 
@@ -188,7 +189,13 @@ def list_namespaces() -> list:
     v1 = client.CoreV1Api()
     namespace_list: list = []
     
-    namespaces: dict = v1.list_namespace()
+    try:
+        namespaces: dict = v1.list_namespace()
+    except ApiException as e:
+        print(f'Your request failed with code: {e.status}')
+        print(f'Reason for failure: {e.reason}')
+        exit(1)
+        
     for i in range(len(namespaces.items)):
         namespace_list.append(namespaces.items[i].metadata.name)
     return namespace_list
