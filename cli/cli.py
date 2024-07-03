@@ -15,7 +15,8 @@ def choose_option() -> None:
         inquirer.List(
             'option',
             message="Choose an action",
-            choices=['Get Container Images', 
+            choices=['Get Pods Metrics',
+                     'Get Container Images', 
                      'Get Resource Requests Information',
                      'Get Replica Count',
                      'Exit'
@@ -28,6 +29,11 @@ def choose_option() -> None:
     match answers["option"]:
         case "Exit":
             exit(0)
+        case "Get Pods Metrics":
+            ns_list: list = kuber.list_namespaces()
+            chosen_ns: str = choose_namespace(ns_list=ns_list)
+            kuber.get_pod_metrics(namespace=chosen_ns)
+            choose_option()
         case "Get Container Images":
             ns_list: list = kuber.list_namespaces()
             chosen_ns: str = choose_namespace(ns_list=ns_list)

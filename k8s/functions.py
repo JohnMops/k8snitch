@@ -3,11 +3,13 @@ from kubernetes.config.config_exception import ConfigException
 from kubernetes.client.exceptions import ApiException
 import pandas as pd
 from tabulate import tabulate
+from helpers import helpers
 
 class Kuber():
     def __init__(self) -> None:
         self._appsv1api = client.AppsV1Api()
         self._corev1api = client.CoreV1Api()
+        self._customobjectsapi = client.CustomObjectsApi()
 
     def load_kube_config() -> None:
         try:
@@ -27,6 +29,60 @@ class Kuber():
         current_context = active_context['name']
         
         return current_context
+
+    def get_pod_metrics(self, namespace: str) -> None:
+        """
+        Fetches metrics for each pod in a namespaces 
+        from the metric server and returns a table with
+        the values
+
+        Args:
+            namespace (str): Namespace to analyze
+        """
+        try:
+
+            api_instance = self._customobjectsapi
+
+            data: list = []
+            headers: list = ["Pod", "CPU(Cores)", "Memory(Bytes)"]
+            
+            group = 'metrics.k8s.io'
+            version = 'v1beta1'
+            namespace = namespace
+            plural = 'pods'
+
+            pod_metrics = api_instance.list_namespaced_custom_object(group, version, namespace, plural)
+
+            # Print pod metrics
+            for pod in pod_metrics['items']:
+                pod_name = pod['metadata']['name']
+                total_cpu_cores = 0
+                total_memory_mb = 0
+
+                for container in pod['containers']:
+                    cpu_usage = container['usage']['cpu']
+                    memory_usage = container['usage']['memory']
+
+                    total_cpu_cores += helpers.convert_cpu_to_cores(cpu_usage)
+                    total_memory_mb += helpers.convert_memory_to_mb(memory_usage)
+            
+                data.append([
+                    pod_name,
+                    f'{total_cpu_cores:.2f}C',
+                    f'{total_memory_mb:.0f}Mi'
+                ])
+            
+            df = pd.DataFrame(data, columns=headers)
+        
+            df.index = df.index + 1
+
+            print(tabulate(df, headers='keys', tablefmt='grid'))
+            
+            print("\n")
+
+        except ApiException as e:
+            print(f"Exception when calling CustomObjectsApi->list_namespaced_custom_object: {e}")
+
 
     def get_deployments(self, namespace: str) -> list:
         """
