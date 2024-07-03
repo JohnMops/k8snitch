@@ -27,6 +27,16 @@ k8snitch is an interactive CLI tool designed to fetch information from your Kube
 
 ## Functionality
 
+### Get Pods Metrics
+
+- **Select this action**: Choose to fetch container image information.
+- **Select the namespace**: Specify the namespace in the Kubernetes cluster.
+- **Output format**: Displays information in a formatted table.
+- **Outputs**:
+  - Pod Name
+  - CPU Cores
+  - Memory Bytes
+
 ### Get Container Images
 
 - **Select this action**: Choose to fetch container image information.
