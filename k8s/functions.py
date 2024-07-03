@@ -1,8 +1,13 @@
 from kubernetes import client, config
+from kubernetes.config.config_exception import ConfigException
 import pandas as pd
 from tabulate import tabulate
 
-config.load_kube_config()
+try:
+    config.load_kube_config()
+except ConfigException as e:
+    print(e)
+    exit(1)
 
 def show_active_context() -> str:
     """
