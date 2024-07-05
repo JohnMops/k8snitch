@@ -70,7 +70,7 @@ k8snitch is an interactive CLI tool designed to fetch information from your Kube
   - Namespace
   - Replica caount for the workload
 
-### Get Deployment Logs
+### Get Deployment Logs: None Sidecar
 
 - **Select this action**: Choose to fetch resources requests information.
 - **Select the namespace**: Specify the namespace in the Kubernetes cluster.
@@ -79,7 +79,7 @@ k8snitch is an interactive CLI tool designed to fetch information from your Kube
 - **Outputs**:
   - Logs print
 
-### Get StatefulSet Logs
+### Get StatefulSet Logs: None Sidecar
 
 - **Select this action**: Choose to fetch resources requests information.
 - **Select the namespace**: Specify the namespace in the Kubernetes cluster.
