@@ -15,7 +15,9 @@ def choose_option() -> None:
         inquirer.List(
             'option',
             message="Choose an action",
-            choices=['Get Pods Metrics',
+            choices=['Get Deployment Logs',
+                     'Get StatefulSet Logs',
+                     'Get Pods Metrics',
                      'Get Container Images', 
                      'Get Resource Requests Information',
                      'Get Replica Count',
@@ -29,6 +31,34 @@ def choose_option() -> None:
     match answers["option"]:
         case "Exit":
             exit(0)
+        case "Get StatefulSet Logs":
+            ns_list: list = kuber.list_namespaces()
+            chosen_ns: str = choose_namespace(ns_list=ns_list)
+            sts_list: list = kuber.list_statefulsets(namespace=chosen_ns)
+            if sts_list:
+                sts_name: str = choose_statefulset(sts_list=sts_list)
+                sts_label_selector: str = kuber.get_statefulset_labels(namespace=chosen_ns,
+                                                                    sts_name=sts_name)
+                kuber.read_logs(namespace=chosen_ns,
+                                label_selector=sts_label_selector)
+                choose_option()
+            else:
+                print(f'No StatefulSets in {chosen_ns}\n')
+                choose_option()
+        case "Get Deployment Logs":
+            ns_list: list = kuber.list_namespaces()
+            chosen_ns: str = choose_namespace(ns_list=ns_list)
+            deployment_list: list = kuber.list_deployments(namespace=chosen_ns)
+            if deployment_list:
+                deployment_name: str = choose_deployment(deployment_list=deployment_list)
+                deployment_label_selector: str = kuber.get_deployment_labels(deployment_name=deployment_name,
+                                                                            namespace=chosen_ns)
+                kuber.read_logs(namespace=chosen_ns,
+                                label_selector=deployment_label_selector)
+                choose_option()
+            else: 
+                print(f'No Deployments in {chosen_ns}\n')
+                choose_option()
         case "Get Pods Metrics":
             ns_list: list = kuber.list_namespaces()
             chosen_ns: str = choose_namespace(ns_list=ns_list)
@@ -50,6 +80,50 @@ def choose_option() -> None:
             kuber.get_replicas_count(namespace=chosen_ns)
             choose_option()
 
+def choose_deployment(deployment_list: list) -> str:
+    """
+    Gets a list of deployments in the cluster
+    and presents them as options
+
+    Args:
+        deployment_list (list): List of deployments in the cluster
+
+    Returns:
+        str: Returns the chosen deployment
+    """
+    
+    questions = [
+        inquirer.List(
+            'option',
+            message="Choose Deployment",
+            choices=lambda answers: deployment_list,
+        ),
+    ]
+    answers: dict = inquirer.prompt(questions)
+
+    return answers["option"] 
+
+def choose_statefulset(sts_list: list) -> str:
+    """
+    Gets a list of statefulsets in the cluster
+    and presents them as options
+
+    Args:
+        sts_list (list): List of statefulsets in the cluster
+
+    Returns:
+        str: Returns the chosen statefulset
+    """
+    questions = [
+        inquirer.List(
+            'option',
+            message="Choose StatefulSet",
+            choices=lambda answers: sts_list,
+        ),
+    ]
+    answers: dict = inquirer.prompt(questions)
+
+    return answers["option"] 
 
 # @cli.command()
 def choose_namespace(ns_list: list) -> str:

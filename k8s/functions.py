@@ -29,7 +29,45 @@ class Kuber():
         current_context = active_context['name']
         
         return current_context
+    
+    def get_deployment_labels(self, deployment_name: str, namespace: str) -> str:
+        deployment: dict = self._appsv1api.read_namespaced_deployment(name=deployment_name, 
+                                                                      namespace=namespace)
+        labels: dict = deployment.spec.selector.match_labels
+        label_selector: str = ",".join([f"{key}={value}" for key, value in labels.items()])
+        
+        return label_selector
+    
+    def get_statefulset_labels(self, sts_name: str, namespace: str) -> str:        
+        sts: dict = self._appsv1api.read_namespaced_stateful_set(name=sts_name, 
+                                                                 namespace=namespace)
+        labels: dict = sts.spec.selector.match_labels
+        label_selector: str = ",".join([f"{key}={value}" for key, value in labels.items()])
+        
+        return label_selector
+    
+    def read_logs(self, namespace: str, label_selector: str) -> None:
+        v1 = self._corev1api
 
+        pods = v1.list_namespaced_pod(namespace, label_selector=label_selector)
+        
+        for pod in pods.items:
+            pod_name: str = pod.metadata.name
+            containers: dict = pod.spec.containers
+            
+            for container in containers:
+                if container.name.startswith('istio'):
+                    break
+                else:
+                    try:
+                        print('-' * 20 + f" Logs for pod {pod_name}: " + '-' * 20 + '\n')
+                        logs = v1.read_namespaced_pod_log(name=pod_name, 
+                                                        namespace=namespace, 
+                                                        container=container.name)
+                        print(logs)
+                    except ApiException as e:
+                        print(e)
+            
     def get_pod_metrics(self, namespace: str) -> None:
         """
         Fetches metrics for each pod in a namespaces 
@@ -239,6 +277,46 @@ class Kuber():
         
         print("\n")
 
+    def list_deployments(self, namespace: str) -> list:
+        """
+        Fetches the list of deployments for a specific namespace
+
+        Args:
+            namespace (str): Namespace name to fetch deployments from
+
+        Returns:
+            list: List of deployments names
+        """
+        v1 = self._appsv1api
+        deployment_list: list = []
+        
+        deployments = v1.list_namespaced_deployment(namespace=namespace)
+        for deployment in deployments.items:
+            deployment_name: str = deployment.metadata.name
+            deployment_list.append(deployment_name)
+        
+        return deployment_list
+    
+    def list_statefulsets(self, namespace: str) -> list:
+        """
+        Fetches the list of statefulsets for a specific namespace
+
+        Args:
+            namespace (str): Namespace name to fetch statefulsets from
+
+        Returns:
+            list: List of statefulsets names
+        """
+        v1 = self._appsv1api
+        sts_list: list = []
+        
+        statefulsets = v1.list_namespaced_stateful_set(namespace=namespace)
+        for sts in statefulsets.items:
+            sts_name: str = sts.metadata.name
+            sts_list.append(sts_name)
+        
+        return sts_list
+    
     def list_namespaces(self) -> list:
         """
         Gets the list of namespaces in
