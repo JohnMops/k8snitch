@@ -43,7 +43,8 @@ def choose_option() -> None:
                                 label_selector=sts_label_selector)
                 choose_option()
             else:
-                print(f'No StatefulSets in {chosen_ns}\n')
+                # print(f'No StatefulSets in {chosen_ns}\n')
+                click.echo(click.style(f'No StatefulSets in {chosen_ns}\n', fg='red'))
                 choose_option()
         case "Get Deployment Logs":
             ns_list: list = kuber.list_namespaces()
@@ -57,7 +58,7 @@ def choose_option() -> None:
                                 label_selector=deployment_label_selector)
                 choose_option()
             else: 
-                print(f'No Deployments in {chosen_ns}\n')
+                click.echo(click.style(f'No Deployments in {chosen_ns}\n', fg='red'))
                 choose_option()
         case "Get Pods Metrics":
             ns_list: list = kuber.list_namespaces()
